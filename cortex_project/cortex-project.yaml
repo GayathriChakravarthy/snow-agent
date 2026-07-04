@@ -1,0 +1,7 @@
+version: 1
+artifacts:
+  - path: UNDERWRITING_ANALYTICS.sv.yaml
+    type: semantic_view
+    targets:
+      default:
+        object: INSURANCE_UNDERWRITING.RAW.UNDERWRITING_ANALYTICS

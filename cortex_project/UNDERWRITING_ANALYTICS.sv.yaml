@@ -1,0 +1,298 @@
+name: UNDERWRITING_ANALYTICS
+description: Insurance underwriting analytics model for Life & Health business. Covers
+  policyholder demographics, policy details, underwriting risk decisions, premium
+  payments, and claims management. Enables analysis of risk assessment, premium collection
+  efficiency, claims ratios, and portfolio performance across product lines.
+tables:
+  - name: RAW_POLICYHOLDERS
+    base_table:
+      database: INSURANCE_UNDERWRITING
+      schema: RAW
+      table: RAW_POLICYHOLDERS
+    primary_key:
+      columns:
+        - POLICYHOLDER_ID
+    dimensions:
+      - name: POLICYHOLDER_ID
+        expr: POLICYHOLDER_ID
+        data_type: VARCHAR
+      - name: FIRST_NAME
+        expr: FIRST_NAME
+        data_type: VARCHAR
+      - name: LAST_NAME
+        expr: LAST_NAME
+        data_type: VARCHAR
+      - name: GENDER
+        expr: GENDER
+        data_type: VARCHAR
+      - name: MARITAL_STATUS
+        expr: MARITAL_STATUS
+        data_type: VARCHAR
+      - name: CITY
+        expr: CITY
+        data_type: VARCHAR
+      - name: STATE_CODE
+        expr: STATE_CODE
+        data_type: VARCHAR
+      - name: OCCUPATION
+        expr: OCCUPATION
+        data_type: VARCHAR
+      - name: SMOKER_FLAG
+        expr: SMOKER_FLAG
+        data_type: BOOLEAN
+      - name: PRE_EXISTING_CONDITIONS
+        expr: PRE_EXISTING_CONDITIONS
+        data_type: VARCHAR
+    time_dimensions:
+      - name: DATE_OF_BIRTH
+        expr: DATE_OF_BIRTH
+        data_type: DATE
+      - name: CREATED_AT
+        expr: CREATED_AT
+        data_type: TIMESTAMP_NTZ
+    facts:
+      - name: ANNUAL_INCOME
+        expr: ANNUAL_INCOME
+        data_type: NUMBER
+      - name: BMI
+        expr: BMI
+        data_type: NUMBER
+  - name: RAW_POLICIES
+    base_table:
+      database: INSURANCE_UNDERWRITING
+      schema: RAW
+      table: RAW_POLICIES
+    primary_key:
+      columns:
+        - POLICY_ID
+    dimensions:
+      - name: POLICY_ID
+        expr: POLICY_ID
+        data_type: VARCHAR
+      - name: POLICYHOLDER_ID
+        expr: POLICYHOLDER_ID
+        data_type: VARCHAR
+      - name: PRODUCT_LINE
+        expr: PRODUCT_LINE
+        data_type: VARCHAR
+      - name: PRODUCT_NAME
+        expr: PRODUCT_NAME
+        data_type: VARCHAR
+      - name: POLICY_STATUS
+        expr: POLICY_STATUS
+        data_type: VARCHAR
+      - name: TERM_YEARS
+        expr: TERM_YEARS
+        data_type: NUMBER
+      - name: PAYMENT_FREQUENCY
+        expr: PAYMENT_FREQUENCY
+        data_type: VARCHAR
+      - name: AGENT_ID
+        expr: AGENT_ID
+        data_type: VARCHAR
+    time_dimensions:
+      - name: EFFECTIVE_DATE
+        expr: EFFECTIVE_DATE
+        data_type: DATE
+      - name: EXPIRATION_DATE
+        expr: EXPIRATION_DATE
+        data_type: DATE
+      - name: APPLICATION_DATE
+        expr: APPLICATION_DATE
+        data_type: DATE
+      - name: ISSUE_DATE
+        expr: ISSUE_DATE
+        data_type: DATE
+    facts:
+      - name: SUM_ASSURED
+        expr: SUM_ASSURED
+        data_type: NUMBER
+      - name: ANNUAL_PREMIUM
+        expr: ANNUAL_PREMIUM
+        data_type: NUMBER
+  - name: RAW_UNDERWRITING_DECISIONS
+    base_table:
+      database: INSURANCE_UNDERWRITING
+      schema: RAW
+      table: RAW_UNDERWRITING_DECISIONS
+    primary_key:
+      columns:
+        - DECISION_ID
+        - POLICY_ID
+    dimensions:
+      - name: DECISION_ID
+        expr: DECISION_ID
+        data_type: VARCHAR
+      - name: POLICY_ID
+        expr: POLICY_ID
+        data_type: VARCHAR
+      - name: POLICYHOLDER_ID
+        expr: POLICYHOLDER_ID
+        data_type: VARCHAR
+      - name: UNDERWRITER_ID
+        expr: UNDERWRITER_ID
+        data_type: VARCHAR
+      - name: RISK_CLASS
+        expr: RISK_CLASS
+        data_type: VARCHAR
+      - name: DECISION_OUTCOME
+        expr: DECISION_OUTCOME
+        data_type: VARCHAR
+      - name: DECLINE_REASON
+        expr: DECLINE_REASON
+        data_type: VARCHAR
+      - name: EXCLUSIONS_APPLIED
+        expr: EXCLUSIONS_APPLIED
+        data_type: VARCHAR
+      - name: MEDICAL_EXAM_REQUIRED
+        expr: MEDICAL_EXAM_REQUIRED
+        data_type: BOOLEAN
+      - name: MEDICAL_EXAM_RESULT
+        expr: MEDICAL_EXAM_RESULT
+        data_type: VARCHAR
+    time_dimensions:
+      - name: DECISION_DATE
+        expr: DECISION_DATE
+        data_type: DATE
+    facts:
+      - name: RISK_SCORE
+        expr: RISK_SCORE
+        data_type: NUMBER
+      - name: PREMIUM_LOADING_PCT
+        expr: PREMIUM_LOADING_PCT
+        data_type: NUMBER
+  - name: RAW_PREMIUMS
+    base_table:
+      database: INSURANCE_UNDERWRITING
+      schema: RAW
+      table: RAW_PREMIUMS
+    primary_key:
+      columns:
+        - PREMIUM_ID
+    dimensions:
+      - name: PREMIUM_ID
+        expr: PREMIUM_ID
+        data_type: VARCHAR
+      - name: POLICY_ID
+        expr: POLICY_ID
+        data_type: VARCHAR
+      - name: POLICYHOLDER_ID
+        expr: POLICYHOLDER_ID
+        data_type: VARCHAR
+      - name: PAYMENT_METHOD
+        expr: PAYMENT_METHOD
+        data_type: VARCHAR
+      - name: PAYMENT_STATUS
+        expr: PAYMENT_STATUS
+        data_type: VARCHAR
+    time_dimensions:
+      - name: DUE_DATE
+        expr: DUE_DATE
+        data_type: DATE
+      - name: PAYMENT_DATE
+        expr: PAYMENT_DATE
+        data_type: DATE
+    facts:
+      - name: AMOUNT_DUE
+        expr: AMOUNT_DUE
+        data_type: NUMBER
+      - name: AMOUNT_PAID
+        expr: AMOUNT_PAID
+        data_type: NUMBER
+      - name: LATE_FEE
+        expr: LATE_FEE
+        data_type: NUMBER
+  - name: RAW_CLAIMS
+    base_table:
+      database: INSURANCE_UNDERWRITING
+      schema: RAW
+      table: RAW_CLAIMS
+    primary_key:
+      columns:
+        - CLAIM_ID
+        - POLICY_ID
+    dimensions:
+      - name: CLAIM_ID
+        expr: CLAIM_ID
+        data_type: VARCHAR
+      - name: POLICY_ID
+        expr: POLICY_ID
+        data_type: VARCHAR
+      - name: POLICYHOLDER_ID
+        expr: POLICYHOLDER_ID
+        data_type: VARCHAR
+      - name: CLAIM_TYPE
+        expr: CLAIM_TYPE
+        data_type: VARCHAR
+      - name: CLAIM_STATUS
+        expr: CLAIM_STATUS
+        data_type: VARCHAR
+      - name: CAUSE_OF_CLAIM
+        expr: CAUSE_OF_CLAIM
+        data_type: VARCHAR
+      - name: DIAGNOSIS_CODE
+        expr: DIAGNOSIS_CODE
+        data_type: VARCHAR
+      - name: HOSPITAL_NAME
+        expr: HOSPITAL_NAME
+        data_type: VARCHAR
+      - name: ADJUSTER_ID
+        expr: ADJUSTER_ID
+        data_type: VARCHAR
+      - name: FRAUD_FLAG
+        expr: FRAUD_FLAG
+        data_type: BOOLEAN
+    time_dimensions:
+      - name: DATE_OF_LOSS
+        expr: DATE_OF_LOSS
+        data_type: DATE
+      - name: DATE_REPORTED
+        expr: DATE_REPORTED
+        data_type: DATE
+      - name: DATE_CLOSED
+        expr: DATE_CLOSED
+        data_type: DATE
+    facts:
+      - name: CLAIM_AMOUNT
+        expr: CLAIM_AMOUNT
+        data_type: NUMBER
+      - name: APPROVED_AMOUNT
+        expr: APPROVED_AMOUNT
+        data_type: NUMBER
+      - name: PAID_AMOUNT
+        expr: PAID_AMOUNT
+        data_type: NUMBER
+verified_queries:
+  - name: 0;1
+    question: What is the total premium and policy count by product line?
+    sql: SELECT p.PRODUCT_LINE, COUNT(*) AS policy_count, SUM(p.ANNUAL_PREMIUM) AS
+      total_premium FROM raw_policies AS p GROUP BY p.PRODUCT_LINE
+    verified_at: 1782822523
+    verified_by: Semantic Model Generator
+  - name: 1;1
+    question: How are underwriting decisions distributed across risk classes?
+    sql: SELECT ud.RISK_CLASS, COUNT(*) AS decision_count, AVG(ud.RISK_SCORE) AS avg_risk_score
+      FROM raw_underwriting_decisions AS ud GROUP BY ud.RISK_CLASS ORDER BY avg_risk_score
+    verified_at: 1782822523
+    verified_by: Semantic Model Generator
+  - name: 2;1
+    question: What is the claims summary by status?
+    sql: SELECT c.CLAIM_STATUS, COUNT(*) AS claim_count, SUM(c.CLAIM_AMOUNT) AS total_claimed,
+      SUM(c.APPROVED_AMOUNT) AS total_approved FROM raw_claims AS c GROUP BY c.CLAIM_STATUS
+    verified_at: 1782822523
+    verified_by: Semantic Model Generator
+  - name: 3;1
+    question: What is the premium collection performance by payment status?
+    sql: SELECT pr.PAYMENT_STATUS, COUNT(*) AS payment_count, SUM(pr.AMOUNT_DUE) AS
+      total_due, SUM(pr.AMOUNT_PAID) AS total_paid FROM raw_premiums AS pr GROUP BY
+      pr.PAYMENT_STATUS
+    verified_at: 1782822523
+    verified_by: Semantic Model Generator
+  - name: 4;1
+    question: How are policyholders distributed by state and what is their average
+      income?
+    sql: SELECT ph.STATE_CODE, COUNT(DISTINCT ph.POLICYHOLDER_ID) AS policyholder_count,
+      AVG(ph.ANNUAL_INCOME) AS avg_income FROM raw_policyholders AS ph GROUP BY ph.STATE_CODE
+      ORDER BY policyholder_count DESC
+    verified_at: 1782822523
+    verified_by: Semantic Model Generator
